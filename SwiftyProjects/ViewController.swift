@@ -40,7 +40,7 @@ class ViewController: UIViewController, ProjectsViewModelDelegate {
         self.tableView?.backgroundColor = UIColor.whiteColor()
         
         self.tableView?.scrollsToTop = true
-
+        self.choseProject("inat-observation-of-the-day")
     }
 
     override func didReceiveMemoryWarning() {
