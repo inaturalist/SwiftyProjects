@@ -388,6 +388,12 @@ class ProjectsViewModel: NSObject, UICollectionViewDelegate, UICollectionViewDat
                     if let photo = photos.first,
                         let url = NSURL(string: photo.urlString) {
                             cell.imageView?.hnk_setImageFromURL(url)
+                            
+                            cell.imageView?.contentMode = .ScaleAspectFill
+                            let medUrlString = photo.urlString.stringByReplacingOccurrencesOfString("square", withString: "medium")
+                            if let medUrl = NSURL(string: medUrlString) {
+                                cell.imageView?.hnk_setImageFromURL(medUrl)
+                            }
                     }
                 }
             }
