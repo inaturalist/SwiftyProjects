@@ -1,9 +1,6 @@
 *.DS_Store
-INaturalist.xcodeproj/project.xcworkspace
-INaturalist.xcodeproj/xcuserdata
-INaturalistIOS/config.h
-config.h
-Crashlytics.framework
+SwiftyProjects.xcodeproj/project.xcworkspace
+SwiftyProjects.xcodeproj/xcuserdata
 
 # from https://github.com/github/gitignore/blob/master/Objective-C.gitignore
 *.pbxuser
