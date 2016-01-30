@@ -387,13 +387,13 @@ class ProjectsViewModel: NSObject, UICollectionViewDelegate, UICollectionViewDat
                 if photos.count > 0 {
                     if let photo = photos.first,
                         let url = NSURL(string: photo.urlString) {
-                            cell.imageView?.hnk_setImageFromURL(url)
-                            
-                            cell.imageView?.contentMode = .ScaleAspectFill
-                            let medUrlString = photo.urlString.stringByReplacingOccurrencesOfString("square", withString: "medium")
-                            if let medUrl = NSURL(string: medUrlString) {
-                                cell.imageView?.hnk_setImageFromURL(medUrl)
-                            }
+                            // chain loading first a crappy square thumb, then a medium size image
+                            cell.imageView?.hnk_setImageFromURL(url, placeholder: nil, format: nil, failure: nil, success: { (image: UIImage) -> () in
+                                let medUrlString = photo.urlString.stringByReplacingOccurrencesOfString("square", withString: "medium")
+                                if let medUrl = NSURL(string: medUrlString) {
+                                    cell.imageView?.hnk_setImageFromURL(medUrl)
+                                }
+                            })
                     }
                 }
             }
