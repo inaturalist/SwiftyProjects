@@ -1,0 +1,25 @@
+PODS:
+  - Argo (2.2.0)
+  - Crashlytics (3.6.0):
+    - Fabric (~> 1.6.3)
+  - Curry (1.4.0)
+  - Fabric (1.6.4)
+  - HanekeSwift (0.10.1)
+
+DEPENDENCIES:
+  - Argo
+  - Crashlytics
+  - Curry
+  - Fabric
+  - HanekeSwift
+
+SPEC CHECKSUMS:
+  Argo: 4f52a32b4cd913c204e5a45f420b3fccad3e3f24
+  Crashlytics: e4e8d02914f2608fbc7bf42b1a7af838b0db67a2
+  Curry: 294533187eedbf52db60a1e70c29b4f5c9f621c0
+  Fabric: ed41fd62173c6bdea24ab02c9d7707161eabb750
+  HanekeSwift: 08e47d3d0f2899ec58e5d257beba0de619aca9e8
+
+PODFILE CHECKSUM: 84d2bf53a986d791a5d223b4071f0ee886a41c64
+
+COCOAPODS: 1.0.0.beta.2
