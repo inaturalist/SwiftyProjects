@@ -457,94 +457,87 @@ class ProjectsViewModel: NSObject, UICollectionViewDelegate, UICollectionViewDat
         // reset UI to empty
         self.delegate?.reloadData()
         
+        guard let slug = self.projectSlug else {
+            return
+        }
+        
         // fetch from iNat
-        self.fetchObservations()
-        self.fetchObservers()
-        self.fetchSpecies()
+        self.fetchObservations(slug)
+        self.fetchObservers(slug)
+        self.fetchSpecies(slug)
     }
     
-    func fetchObservations() {
-        
-        guard let slug = self.projectSlug else {
-            return
-        }
-        
-        let urlPath: String = "https://api.inaturalist.org/observations?project_id=\(slug)&per_page=200"
-        let url: NSURL = NSURL(string: urlPath)!
+    func fetch(path: String, callback: (json: AnyObject?, error: NSError?) -> Void) {
+        let url: NSURL = NSURL(string: path)!
         let request: NSURLRequest = NSURLRequest(URL: url)
         let queue:NSOperationQueue = NSOperationQueue()
+        
         NSURLConnection.sendAsynchronousRequest(request, queue: queue) { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+            
+            if let err = error {
+                callback(json: nil, error: err)
+                return
+            }
+            
             if let d = data {
                 let json: AnyObject? = try? NSJSONSerialization.JSONObjectWithData(d, options: [])
                 if let j = json {
-                    if let count = j["total_results"] as? Int {
-                        self.observationsTotal = count
-                    }
-                    let array: [Observation]? = decodeWithRootKey("results", j)
-                    self.observations = array
-                    dispatch_async(dispatch_get_main_queue(), {
-                        if let d = self.delegate {
-                            d.reloadData()
-                        }
-                    })
+                    callback(json: j, error: nil)
+                    return
                 }
+            }
+            
+            callback(json: nil, error: NSError(domain: "json error?", code: 999, userInfo: nil))
+        }
+    }
+    
+    func fetchObservations(projectSlug: String) {
+        self.fetch("https://api.inaturalist.org/observations?project_id=\(projectSlug)&per_page=200") { (json, error) -> Void in
+            if let j = json {
+                if let count = j["total_results"] as? Int {
+                    self.observationsTotal = count
+                }
+                let array: [Observation]? = decodeWithRootKey("results", j)
+                self.observations = array
+                dispatch_async(dispatch_get_main_queue(), {
+                    if let d = self.delegate {
+                        d.reloadData()
+                    }
+                })
             }
         }
     }
     
-    func fetchObservers() {
-        guard let slug = self.projectSlug else {
-            return
-        }
-
-        let urlPath: String = "http://api.inaturalist.org/observations/observers?project_id=\(slug)"
-        let url: NSURL = NSURL(string: urlPath)!
-        let request: NSURLRequest = NSURLRequest(URL: url)
-        let queue:NSOperationQueue = NSOperationQueue()
-        NSURLConnection.sendAsynchronousRequest(request, queue: queue) { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
-            if let d = data {
-                let json: AnyObject? = try? NSJSONSerialization.JSONObjectWithData(d, options: [])
-                if let j = json {
-                    if let count = j["total_results"] as? Int {
-                        self.observersTotal = count
-                    }
-                    let array: [UserCount]? = decodeWithRootKey("results", j)
-                    self.userCounts = array
-                    dispatch_async(dispatch_get_main_queue(), {
-                        if let d = self.delegate {
-                            d.reloadData()
-                        }
-                    })
+    func fetchObservers(projectSlug: String) {
+        self.fetch("http://api.inaturalist.org/observations/observers?project_id=\(projectSlug)") { (json, error) -> Void in
+            if let j = json {
+                if let count = j["total_results"] as? Int {
+                    self.observersTotal = count
                 }
+                let array: [UserCount]? = decodeWithRootKey("results", j)
+                self.userCounts = array
+                dispatch_async(dispatch_get_main_queue(), {
+                    if let d = self.delegate {
+                        d.reloadData()
+                    }
+                })
             }
         }
-
     }
     
-    func fetchSpecies() {
-        guard let slug = self.projectSlug else {
-            return
-        }
-
-        let urlPath: String = "http://api.inaturalist.org/observations/species_counts?project_id=\(slug)"
-        let url: NSURL = NSURL(string: urlPath)!
-        let request: NSURLRequest = NSURLRequest(URL: url)
-        let queue:NSOperationQueue = NSOperationQueue()
-        NSURLConnection.sendAsynchronousRequest(request, queue: queue) { (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
-            if let d = data {
-                let json: AnyObject? = try? NSJSONSerialization.JSONObjectWithData(d, options: [])
-                if let j = json {
-                    if let count = j["total_results"] as? Int {
-                        self.speciesTotal = count
-                    }
-                    let array: [TaxonCount]? = decodeWithRootKey("results", j)
-                    self.taxonCounts = array
-                    dispatch_async(dispatch_get_main_queue(), {
-                        if let d = self.delegate {
-                            d.reloadData()
-                        }
-                    })
+    func fetchSpecies(projectSlug: String) {
+        self.fetch("http://api.inaturalist.org/observations/species_counts?project_id=\(projectSlug)") { (json, error) -> Void in
+            if let j = json {
+                if let count = j["total_results"] as? Int {
+                    self.speciesTotal = count
                 }
+                let array: [TaxonCount]? = decodeWithRootKey("results", j)
+                self.taxonCounts = array
+                dispatch_async(dispatch_get_main_queue(), {
+                    if let d = self.delegate {
+                        d.reloadData()
+                    }
+                })
             }
         }
     }
