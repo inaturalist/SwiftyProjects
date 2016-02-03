@@ -186,8 +186,6 @@ class ContainerViewController: UIViewController, ContainedScrollViewDelegate {
         default:
             // scroll down to show the whole header
             scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
-
-            print("ACK SHOULD NOT GET HERE")
         }
     }
     
