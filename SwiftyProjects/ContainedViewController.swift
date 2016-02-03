@@ -10,122 +10,107 @@ import Argo
 import Curry
 import UIKit
 
-class ContainedViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class ContainedViewController: UIViewController {
     
-    var containedScrollViewDelegate: ContainedScrollViewDelegate?
-    var tv: UITableView?
-    var inatAPI: INatAPI?
+    let SegueIdentifierObservations = "embedObservations"
+    let SegueIdentifierSpecies = "embedSpecies"
+    let SegueIdentifierObservers = "embedObservers"
     
-    var taxonCounts: [TaxonCount]?
-    var speciesTotal: Int = 0
+    var currentSegueIdentifier: String?
+    
+    weak var containedScrollViewDelegate: ContainedScrollViewDelegate?
+    
+    var children = [UIViewController]()
+    
+    // MARK: - pass messages from the containing observation down to the children
+    
+    func reloadChildren() {
+        for child in children {
+            if let visualizer = child as? ProjectObservationVisualizer {
+                visualizer.reload()
+            }
+        }
+    }
+    
+    func choseProjectSlug(slug: String) {
+        for child in children {
+            if let visualizer = child as? ProjectObservationVisualizer {
+                visualizer.choseProjectSlug(slug)
+            }
+        }
+    }
+    
+    // MARK: - switching among child containers
+    
+    func choseObservations() {
+        self.performSegueWithIdentifier(SegueIdentifierObservations, sender: nil)
+    }
+    
+    func choseObservers() {
+        self.performSegueWithIdentifier(SegueIdentifierObservers, sender: nil)
+    }
+    
+    func choseSpecies() {
+        self.performSegueWithIdentifier(SegueIdentifierSpecies, sender: nil)
+    }
+    
+    
     
     override func viewDidLoad() {
-        
-        self.title = "All Texas Nature"
-        
-        let tv = UITableView(frame: CGRectZero, style: .Plain)
-        self.tv = tv
-        tv.translatesAutoresizingMaskIntoConstraints = false
-        
-        tv.backgroundColor = UIColor.clearColor()
-        
-        tv.delegate = self
-        tv.dataSource = self
-        tv.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        
-        self.view.addSubview(tv)
-        let views = ["tv": tv ]
-        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-0-[tv]-0-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[tv]-0-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views))
-        
-        // fetch tpwd
-        let api = INatAPI()
-        api.fetchSpecies("all-texas-nature") { (json, error) -> Void in
-            if let j = json {
-                if let count = j["total_results"] as? Int {
-                    self.speciesTotal = count
-                }
-                let array: [TaxonCount]? = decodeWithRootKey("results", j)
-                self.taxonCounts = array
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.tv?.reloadData()
-                })
-            }
-            
-        }
+        self.performSegueWithIdentifier(SegueIdentifierObservations, sender: nil)
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
+    // MARK: - the container stuff is all handled via this prepareForSegue
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let tc = self.taxonCounts {
-            return tc.count
-        } else {
-            return 0
-        }
-    }
-    
-    func taxonCell(inTableView: UITableView, forIndexPath: NSIndexPath) -> UITableViewCell {
-        let cell = inTableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: forIndexPath)
-        
-        cell.selectionStyle = .None
-        cell.textLabel?.textColor = UIColor.grayColor()
-        
-        cell.imageView?.image = UIImage(named: "small.jpg")
-        
-        if let tcs = self.taxonCounts {
-            let tc = tcs[forIndexPath.item]
-            
-            var scientificName: String?
-            if tc.taxon.rankLevel >= 20 {
-                scientificName = "\(tc.taxon.rank.capitalizedString) \(tc.taxon.scientificName)"
-            } else {
-                scientificName = tc.taxon.scientificName
-            }
-            
-            if let commonName = tc.taxon.commonName {
-                cell.textLabel?.text = commonName
-            } else {
-                cell.textLabel?.text = scientificName
-                if tc.taxon.rankLevel < 30 {
-                    if let pointSize = cell.textLabel?.font.pointSize {
-                        cell.textLabel?.font = UIFont.italicSystemFontOfSize(pointSize)
-                    }
-                }
-            }
-            
-            cell.imageView?.clipsToBounds = true
-            cell.imageView?.contentMode = .ScaleAspectFill
-            
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if self.currentSegueIdentifier == segue.identifier {
+            return
         }
         
-        return cell
-    }
+        self.currentSegueIdentifier = segue.identifier
+        
+        var destinationVC = segue.destinationViewController
+        // if we already have a child of this class, use that instead
+        for child in children {
+            if child.dynamicType === destinationVC.dynamicType {
+                destinationVC = child
+            }
+        }
+        
+        if !children.contains(destinationVC) {
+            self.children.append(destinationVC)
+        }
 
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        return self.taxonCell(tableView, forIndexPath: indexPath)
-    }
-    
-    func scrollViewDidScroll(scrollView: UIScrollView) {
-        self.containedScrollViewDelegate?.scrollViewDidScroll(scrollView)
+        if let observedVC = destinationVC as? ObservedScrollView {
+            observedVC.containedScrollViewDelegate = self.containedScrollViewDelegate
+        }
         
+        if let id = segue.identifier where id == SegueIdentifierObservations {
+            if let first = self.childViewControllers.first {
+                self.swapFromViewController(first, toViewController: destinationVC)
+            } else {
+                // setup first child VC
+                self.addChildViewController(destinationVC)
+                destinationVC.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height)
+                self.view.addSubview(destinationVC.view)
+                destinationVC.didMoveToParentViewController(self)
+            }
+        } else {
+            // swap from top VC to segue destination
+            if let first = self.childViewControllers.first {
+                self.swapFromViewController(first, toViewController: destinationVC)
+            }
+        }
+    }
+    
+    func swapFromViewController(fromViewController: UIViewController, toViewController: UIViewController) {
+        toViewController.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height)
         
+        fromViewController.willMoveToParentViewController(nil)
+        self.addChildViewController(toViewController)
+        self.transitionFromViewController(fromViewController, toViewController: toViewController, duration: 0.33, options: .TransitionCrossDissolve, animations: nil) { (finished) -> Void in
+            fromViewController.removeFromParentViewController()
+            toViewController.didMoveToParentViewController(self)
+        }
     }
-    
-    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
-        self.containedScrollViewDelegate?.scrollViewDidEndScrolling(scrollView)
-    }
-    
-    func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        self.containedScrollViewDelegate?.scrollViewDidEndScrolling(scrollView)
-    }
-    
-    
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return .min
-    }
-    
 }
