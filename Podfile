@@ -10,5 +10,6 @@ target 'SwiftyProjects' do
 	pod 'HanekeSwift'
 	pod 'Fabric'
 	pod 'Crashlytics'
+    pod 'ICViewPager'
 end
 

@@ -5,6 +5,7 @@ PODS:
   - Curry (1.4.0)
   - Fabric (1.6.4)
   - HanekeSwift (0.10.1)
+  - ICViewPager (1.5.1)
 
 DEPENDENCIES:
   - Argo
@@ -12,6 +13,7 @@ DEPENDENCIES:
   - Curry
   - Fabric
   - HanekeSwift
+  - ICViewPager
 
 SPEC CHECKSUMS:
   Argo: 4f52a32b4cd913c204e5a45f420b3fccad3e3f24
@@ -19,7 +21,8 @@ SPEC CHECKSUMS:
   Curry: 294533187eedbf52db60a1e70c29b4f5c9f621c0
   Fabric: ed41fd62173c6bdea24ab02c9d7707161eabb750
   HanekeSwift: 08e47d3d0f2899ec58e5d257beba0de619aca9e8
+  ICViewPager: 032dc71a50fe898e185fae6112ded4bed0e0523c
 
-PODFILE CHECKSUM: 84d2bf53a986d791a5d223b4071f0ee886a41c64
+PODFILE CHECKSUM: fb7136c96344bf1dac24848219b47d23861c41df
 
 COCOAPODS: 1.0.0.beta.2

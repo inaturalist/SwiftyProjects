@@ -46,6 +46,16 @@ class INatAPI {
         }
     }
     
+    func fetchIdentifiers(projectSlug: String, callback:(json: AnyObject?, error: NSError?) -> Void) {
+        self.fetch("http://api.inaturalist.org/observations/identifiers?project_id=\(projectSlug)") { (json, error) -> Void in
+            if let e = error {
+                callback(json: nil, error: e)
+            } else if let j = json {
+                callback(json: j, error: nil)
+            }
+        }
+    }
+
     func fetchObservers(projectSlug: String, callback:(json: AnyObject?, error: NSError?) -> Void) {
         self.fetch("http://api.inaturalist.org/observations/observers?project_id=\(projectSlug)") { (json, error) -> Void in
             if let e = error {
