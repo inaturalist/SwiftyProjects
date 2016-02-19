@@ -28,6 +28,12 @@ class ProjectIdentifiersViewController: UITableViewController, ObservedScrollVie
         }
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        print("identifiers")
+    }
+
+    
     // MARK: - iNat api fetch
     
     func fetchProjectSlug(slug: String) {

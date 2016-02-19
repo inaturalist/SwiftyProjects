@@ -25,6 +25,7 @@
 		FA22EA771C76382C006BEBF4 /* ProjectIdentifiersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA22EA761C76382C006BEBF4 /* ProjectIdentifiersViewController.swift */; };
 		FA22EA791C763833006BEBF4 /* IdentifierCountCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA22EA781C763833006BEBF4 /* IdentifierCountCell.swift */; };
 		FA22EA7B1C76383A006BEBF4 /* IdentifierCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA22EA7A1C76383A006BEBF4 /* IdentifierCount.swift */; };
+		FA22EA7D1C76512C006BEBF4 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA22EA7C1C76512C006BEBF4 /* RootViewController.swift */; };
 		FA8DB4131C5C7A7A00901A00 /* Observation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8DB4121C5C7A7A00901A00 /* Observation.swift */; };
 		FA8DB4151C5C84BB00901A00 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8DB4141C5C84BB00901A00 /* Photo.swift */; };
 		FA8DB4171C5C898F00901A00 /* ObsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8DB4161C5C898F00901A00 /* ObsCell.swift */; };
@@ -81,6 +82,7 @@
 		FA22EA761C76382C006BEBF4 /* ProjectIdentifiersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectIdentifiersViewController.swift; sourceTree = "<group>"; };
 		FA22EA781C763833006BEBF4 /* IdentifierCountCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifierCountCell.swift; sourceTree = "<group>"; };
 		FA22EA7A1C76383A006BEBF4 /* IdentifierCount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifierCount.swift; sourceTree = "<group>"; };
+		FA22EA7C1C76512C006BEBF4 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		FA8DB4121C5C7A7A00901A00 /* Observation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observation.swift; sourceTree = "<group>"; };
 		FA8DB4141C5C84BB00901A00 /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		FA8DB4161C5C898F00901A00 /* ObsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObsCell.swift; sourceTree = "<group>"; };
@@ -247,6 +249,7 @@
 		FA8DB41C1C5C8F3800901A00 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				FA22EA7C1C76512C006BEBF4 /* RootViewController.swift */,
 				FA22EA741C763827006BEBF4 /* ViewController.swift */,
 				FA184FB41C6184BB00C4238C /* ProjectObservationsViewController.swift */,
 				FA184FB61C6184CF00C4238C /* ProjectSpeciesViewController.swift */,
@@ -481,6 +484,7 @@
 				FA1C39BC1C5C6A620016E88C /* AppDelegate.swift in Sources */,
 				FA184FB91C6184EC00C4238C /* ProjectObserversViewController.swift in Sources */,
 				FA22EA791C763833006BEBF4 /* IdentifierCountCell.swift in Sources */,
+				FA22EA7D1C76512C006BEBF4 /* RootViewController.swift in Sources */,
 				FA8DB4291C5CB5C300901A00 /* UserCount.swift in Sources */,
 				FA184FAD1C6155E600C4238C /* INatAPI.swift in Sources */,
 				FA8DB4271C5CB5BB00901A00 /* User.swift in Sources */,

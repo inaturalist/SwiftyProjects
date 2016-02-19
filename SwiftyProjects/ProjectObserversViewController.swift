@@ -26,6 +26,12 @@ class ProjectObserversViewController: UITableViewController, ObservedScrollView,
         }
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        print("observers")
+    }
+
+    
     // MARK: - iNat api fetch
 
     func fetchProjectSlug(slug: String) {

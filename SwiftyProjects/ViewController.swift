@@ -38,17 +38,56 @@ class ViewController: ViewPagerController {
         super.viewDidLoad()
         
         self.observationsVC = self.storyboard?.instantiateViewControllerWithIdentifier("observations") as? ProjectObservationsViewController
+        self.observationsVC?.containedScrollViewDelegate = self
         self.speciesVC = self.storyboard?.instantiateViewControllerWithIdentifier("species") as? ProjectSpeciesViewController
+        self.speciesVC?.containedScrollViewDelegate = self
         self.observersVC = self.storyboard?.instantiateViewControllerWithIdentifier("observers") as? ProjectObserversViewController
+        self.observersVC?.containedScrollViewDelegate = self
         self.identifiersVC = self.storyboard?.instantiateViewControllerWithIdentifier("identifiers") as? ProjectIdentifiersViewController
+        self.identifiersVC?.containedScrollViewDelegate = self
         
         self.dataSource = self
         self.delegate = self
+        
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.translucent = true
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func delay(delay:Double, closure:()->()) {
+        dispatch_after(
+            dispatch_time(
+                DISPATCH_TIME_NOW,
+                Int64(delay * Double(NSEC_PER_SEC))
+            ),
+            dispatch_get_main_queue(), closure)
+    }
+    
+    override func selectTabAtIndex(index: UInt) {
+        if let root = self.parentViewController as? RootViewController {
+            root.adjustHeaderTransformForOffset(30)
+        }
+        
+        super.selectTabAtIndex(index)
+    }
+}
+
+extension ViewController: ContainedScrollViewDelegate {
+    func scrollViewDidEndScrolling(scrollView: UIScrollView) {
+        if let root = self.parentViewController as? RootViewController {
+            root.scrollViewDidEndScrolling(scrollView)
+        }
+    }
+    
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        if let root = self.parentViewController as? RootViewController {
+            root.scrollViewDidScroll(scrollView)
+        }
     }
 }
 
@@ -60,10 +99,43 @@ extension ViewController: ViewPagerDelegate {
         case .TabHeight:
             return 60
         case .TabWidth:
-            return viewPager.view.bounds.size.width / 3.5
+            return 105
         default:
             return value
         }
+    }
+    
+    func viewPager(viewPager: ViewPagerController!, didChangeTabToIndex index: UInt) {
+        guard let root = self.parentViewController as? RootViewController else {
+            // do nothing
+            return
+        }
+        
+        switch index {
+        case 0:
+            if let ovc = self.observationsVC, let cv = ovc.collectionView {
+                //cv.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+                //root.adjustHeaderTransformForOffset(cv.contentOffset.y)
+            }
+        case 1:
+            if let svc = self.speciesVC {
+                //svc.tableView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+                //root.adjustHeaderTransformForOffset(svc.tableView.contentOffset.y)
+            }
+        case 2:
+            if let ovc = self.observersVC {
+                //ovc.tableView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+                //root.adjustHeaderTransformForOffset(ovc.tableView.contentOffset.y)
+            }
+        case 3:
+            if let ivc = self.identifiersVC {
+                //ivc.tableView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+                //root.adjustHeaderTransformForOffset(ivc.tableView.contentOffset.y)
+            }
+        default:
+            break
+        }
+        self.view.setNeedsLayout()
     }
 }
 

@@ -28,6 +28,11 @@ class ProjectObservationsViewController: UICollectionViewController, ObservedScr
         }
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        print("observations")
+    }
+    
     // MARK: - iNat api fetch
     
     func fetchProjectSlug(slug: String) {
